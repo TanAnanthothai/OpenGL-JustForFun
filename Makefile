@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall
-PROG = transform
+PROG = lighting
 
 SRCS = main.cpp
 

@@ -16,7 +16,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/* File for "Transformations and Timers" lesson of the OpenGL tutorial on
+/* File for "Lighting" lesson of the OpenGL tutorial on
  * www.videotutorialsrock.com
  */
 
@@ -45,7 +45,12 @@ void handleKeypress(unsigned char key, int x, int y) {
 //Initializes 3D rendering
 void initRendering() {
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.7f, 0.9f, 1.0f, 1.0f);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING); //Enable lighting
+	glEnable(GL_LIGHT0); //Enable light #0
+	glEnable(GL_LIGHT1); //Enable light #1
+	glEnable(GL_NORMALIZE); //Automatically normalize normals
+	//glShadeModel(GL_SMOOTH); //Enable smooth shading
 }
 
 //Called when the window is resized
@@ -56,76 +61,94 @@ void handleResize(int w, int h) {
 	gluPerspective(45.0, (double)w / (double)h, 1.0, 200.0);
 }
 
-float _angle = 30.0f;
-float _cameraAngle = 0.0f;
+float _angle = -70.0f;
 
 //Draws the 3D scene
 void drawScene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
-	glLoadIdentity(); //Reset the drawing perspective
-	glRotatef(-_cameraAngle, 0.0f, 1.0f, 0.0f); //Rotate the camera
-	glTranslatef(0.0f, 0.0f, -5.0f); //Move forward 5 units
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	
-	glPushMatrix(); //Save the transformations performed thus far
-	glTranslatef(0.0f, -1.0f, 0.0f); //Move to the center of the trapezoid
-	glRotatef(_angle, 0.0f, 0.0f, 1.0f); //Rotate about the z-axis
+	glTranslatef(0.0f, 0.0f, -8.0f);
 	
-	glPopMatrix(); //Undo the move to the center of the trapezoid
-	glPushMatrix(); //Save the current state of transformations
-	glTranslatef(1.0f, 1.0f, 0.0f); //Move to the center of the pentagon
-	glRotatef(_angle, 0.0f, 1.0f, 0.0f); //Rotate about the y-axis
-	glScalef(0.7f, 0.7f, 0.7f); //Scale by 0.7 in the x, y, and z directions
+	//Add ambient light
+	GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
 	
-	glBegin(GL_QUADS); //Begin quadrilateral coordinates
+	//Add positioned light
+	GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
+	GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
 	
-	//second one
-	glVertex3f(-0.7f, 0.60f, 0.0f);
-	glVertex3f(0.8f, 0.60f, 0.0f);
-	glVertex3f(0.8f, 1.00f, 0.0f);
-	glVertex3f(-0.7f, 1.00f, 0.0f);
-	glColor3f(0.24f, 1.9f, 0.66f);
-
-	//third one
-	glVertex3f(-0.7f, 0.20f, 0.0f);
-	glVertex3f(0.8f, 0.20f, 0.0f);
-	glVertex3f(0.8f, 0.60f, 0.0f);
-	glVertex3f(-0.7f, 0.60f, 0.0f);
-	glColor3f(2.25f, 0.08f, 0.16f);
-
-	//first one
-	glVertex3f(-0.7f, -0.20f, 0.0f);
-	glVertex3f(0.8f, -0.20f, 0.0f);
-	glVertex3f(0.8f, 0.20f, 0.0f);
-	glVertex3f(-0.7f, 0.20f, 0.0f);
-	glColor3f(2.55f, 2.55f, 2.55f);
-
-	// glVertex3f(0.3f, -0.7f, 0.0f);
-	// glVertex3f(0.3f, 0.7f, 0.0f);
-	// glVertex3f(-0.13f, 0.7f, 0.0f);
-	// glVertex3f(-0.13f, -0.7f, 0.0f);
+	//Add directed light
+	GLfloat lightColor1[] = {0.5f, 0.2f, 0.2f, 1.0f}; //Color (0.5, 0.2, 0.2)
+	//Coming from the direction (-1, 0.5, 0.5)
+	GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+	
+	glRotatef(_angle, 0.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glBegin(GL_QUADS);
+	
+	//Front
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, -1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, -1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, 1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, 1.0f, 1.5f);
+	
+	//Right
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, -1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, 1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, -1.0f, 1.5f);
+	
+	//Back
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, -1.0f, -1.5f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, -1.0f, -1.5f);
+	
+	//Left
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, -1.0f, -1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, -1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, 1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, 1.0f, -1.5f);
 	
 	glEnd();
-	
-	glPopMatrix(); //Undo the move to the center of the pentagon
-	glPushMatrix(); //Save the current state of transformations
-	glTranslatef(-1.0f, 1.0f, 0.0f); //Move to the center of the triangle
-	glRotatef(_angle, 1.0f, 2.0f, 3.0f); //Rotate about the the vector (1, 2, 3)
-	
-	glPopMatrix(); //Undo the move to the center of the triangle
 	
 	glutSwapBuffers();
 }
 
 void update(int value) {
-	_angle += 2.0f;
+	_angle += 1.5f;
 	if (_angle > 360) {
 		_angle -= 360;
 	}
 	
-	glutPostRedisplay(); //Tell GLUT that the display has changed
-	
+	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
 }
 
@@ -136,7 +159,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(400, 400);
 	
 	//Create the window
-	glutCreateWindow("Transformations and Timers - videotutorialsrock.com");
+	glutCreateWindow("Lighting - videotutorialsrock.com");
 	initRendering();
 	
 	//Set handler functions
