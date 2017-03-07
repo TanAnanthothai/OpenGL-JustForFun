@@ -45,6 +45,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 //Initializes 3D rendering
 void initRendering() {
 	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.7f, 0.9f, 1.0f, 1.0f);
 }
 
 //Called when the window is resized
@@ -79,15 +80,31 @@ void drawScene() {
 	
 	glBegin(GL_QUADS); //Begin quadrilateral coordinates
 	
+	//second one
 	glVertex3f(-0.7f, 0.60f, 0.0f);
 	glVertex3f(0.8f, 0.60f, 0.0f);
 	glVertex3f(0.8f, 1.00f, 0.0f);
 	glVertex3f(-0.7f, 1.00f, 0.0f);
+	glColor3f(0.24f, 1.9f, 0.66f);
 
-	glVertex3f(0.3f, -0.7f, 0.0f);
-	glVertex3f(0.3f, 0.7f, 0.0f);
-	glVertex3f(-0.13f, 0.7f, 0.0f);
-	glVertex3f(-0.13f, -0.7f, 0.0f);
+	//third one
+	glVertex3f(-0.7f, 0.20f, 0.0f);
+	glVertex3f(0.8f, 0.20f, 0.0f);
+	glVertex3f(0.8f, 0.60f, 0.0f);
+	glVertex3f(-0.7f, 0.60f, 0.0f);
+	glColor3f(2.25f, 0.08f, 0.16f);
+
+	//first one
+	glVertex3f(-0.7f, -0.20f, 0.0f);
+	glVertex3f(0.8f, -0.20f, 0.0f);
+	glVertex3f(0.8f, 0.20f, 0.0f);
+	glVertex3f(-0.7f, 0.20f, 0.0f);
+	glColor3f(2.55f, 2.55f, 2.55f);
+
+	// glVertex3f(0.3f, -0.7f, 0.0f);
+	// glVertex3f(0.3f, 0.7f, 0.0f);
+	// glVertex3f(-0.13f, 0.7f, 0.0f);
+	// glVertex3f(-0.13f, -0.7f, 0.0f);
 	
 	glEnd();
 	
