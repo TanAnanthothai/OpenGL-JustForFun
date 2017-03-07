@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall
-PROG = basicshapes
+PROG = transform
 
 SRCS = main.cpp
 
