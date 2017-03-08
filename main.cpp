@@ -33,12 +33,25 @@
 #endif
 
 using namespace std;
+int flag=0;
+
+void flag_change(){
+	if(flag==0) {
+		flag=1;
+		glDisable(GL_LIGHTING); //Enable lighting
+	}else {
+		flag=0;
+		glEnable(GL_LIGHTING); //Disable lighting
+	}
+}
 
 //Called when a key is pressed
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
 		case 27: //Escape key
 			exit(0);
+		case 'l':
+			flag_change();
 	}
 }
 
@@ -49,6 +62,7 @@ void initRendering() {
 	glEnable(GL_LIGHTING); //Enable lighting
 	glEnable(GL_LIGHT0); //Enable light #0
 	glEnable(GL_LIGHT1); //Enable light #1
+	glEnable(GL_LIGHT2); //Enable light #2
 	glEnable(GL_NORMALIZE); //Automatically normalize normals
 	//glShadeModel(GL_SMOOTH); //Enable smooth shading
 }
@@ -71,7 +85,7 @@ void drawScene() {
 	glLoadIdentity();
 	
 	glTranslatef(0.0f, 0.0f, -8.0f);
-	
+
 	//Add ambient light
 	GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color (0.2, 0.2, 0.2)
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
@@ -88,6 +102,14 @@ void drawScene() {
 	GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
 	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+
+	//Add 2nd directed light of green color
+	GLfloat lightColor2[] = {1.24f, 2.52f, 0.0f, 1.0f}; //green color
+	//Coming from the direction (-1, 0.5, 0.5)
+	GLfloat lightPos2[] = {6.0f, 0.0f, 0.0f, 0.0f};
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, lightColor2);
+	glLightfv(GL_LIGHT2, GL_POSITION, lightPos2);
+	
 	
 	glRotatef(_angle, 0.0f, 1.0f, 0.0f);
 	glColor3f(1.0f, 1.0f, 0.0f);
@@ -116,16 +138,37 @@ void drawScene() {
 	glVertex3f(1.5f, -1.0f, 1.5f);
 	
 	//Back
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, -1.0f, -1.5f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, 1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, 1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, -1.0f, -1.5f);
+	// glNormal3f(0.0f, 0.0f, -1.0f);
+	// //glNormal3f(-1.0f, 0.0f, -1.0f);
+	// glVertex3f(-1.5f, -1.0f, -1.5f); //bottom right, add more x then go to the left
+	// //glNormal3f(-1.0f, 0.0f, -1.0f);
+	// glVertex3f(-1.5f, 1.0f, -1.5f); //top right, add more x then go to the left
+	// //glNormal3f(1.0f, 0.0f, -1.0f);
+	// glVertex3f(1.5f, 1.0f, -1.5f); //top left, add more x then go to the left
+	// //glNormal3f(1.0f, 0.0f, -1.0f); 
+	// glVertex3f(1.5f, -1.0f, -1.5f); //bottom left, add more x then go to the left
 	
+	//second one of national flag
+	glVertex3f(-1.5f, -1.0f, -1.5f);
+	glVertex3f(1.5f, -1.0f, -1.5f);
+	glVertex3f(1.5f, -0.32f, -1.5f);//top left  
+	glVertex3f(-1.5f, -0.32f, -1.5f); //top right
+	glColor3f(0.24f, 1.9f, 0.66f);
+
+	//third one of national flag
+	glVertex3f(-1.5f, -0.32f, -1.5f); 
+	glVertex3f(1.5f, -0.32f, -1.5f);
+	glVertex3f(1.5f, 0.34f, -1.5f); //top left  
+	glVertex3f(-1.5f, 0.34f, -1.5f); //top right
+	glColor3f(2.25f, 0.08f, 0.16f);
+
+	//first one of national flag
+	glVertex3f(-1.5f, 0.34f, -1.5f);
+	glVertex3f(1.5f, 0.34f, -1.5f); 
+	glVertex3f(1.5f, 1.0f, -1.5f); //top left, add more x then go to the left
+	glVertex3f(-1.5f, 1.0f, -1.5f); //top right
+	glColor3f(2.55f, 2.55f, 2.55f);
+
 	//Left
 	glNormal3f(-1.0f, 0.0f, 0.0f);
 	//glNormal3f(-1.0f, 0.0f, -1.0f);
